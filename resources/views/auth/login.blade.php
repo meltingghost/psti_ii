@@ -2,47 +2,43 @@
 
 @section('content')
         <main class="form-signin">
-            <form action="action_page.php" method="post">
+            <form action="{{ route('login') }}" method="POST">
                 @csrf
                 <div class="imgcontainer">
                     <img src="{{asset('images/user.png')}}" alt="Avatar" class="avatar">
                 </div>
                 <div class="container">
                     <h1>Ingresar</h1>
-                    <input type="text" placeholder="Usuario" name="uname" required>
-                    <input type="password" placeholder="Contraseña" name="psw" required>
+                    <input id="email" type="email" placeholder="Correo" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
+                    @error('email')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                    <input id="password" type="password" placeholder="Contraseña" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
+                    @error('password')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                    @enderror
                     <label id="remembercont">
-                        <input type="checkbox" checked="checked" name="remember"> Recuérdame
+                        <input class="form-check-input" checked="checked" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
                     </label>
                     <button onclick="pop()" id="submit" type="submit">Ingresar</button>
+                    @if (Route::has('password.request'))
+                        <a class="btn btn-link" href="{{ route('password.request') }}">
+                            {{ __('Forgot Your Password?') }}
+                        </a>
+                    @endif
                 </div>
                 <div class="container" style="background-color:#f1f1f1">
                     <span class="psw">¿No posee una cuenta? Entonces <a href="{{ route('register.index') }}">Registrese</a></span>    
                     <span class="psw">¿Olvidó su <a href="#">Contraseña?</a></span>
                     <p id="copy">&copy; 2021</p>
                 </div>
-                <p id="letuknow">Error de Autenticación</p>
+                @error('message')
+                    <p id="letuknow">Error de Autenticación</p>
+                @enderror
             </form>
         </main>
-        <script>
-            function pop() {
-                var x = document.getElementById("letuknow");
-                x.className = "show";
-                setTimeout(function(){ x.className = x.className.replace("show","");}, 3000);
-            }
-            function openSystem(evt, systemName) {
-                var i, tabcontent, tablinks;
-                tabcontent = document.getElementsByClassName("tabcontent");
-                for (i = 0; i < tabcontent.length; i++) {
-                    tabcontent[i].style.display = "none";
-                }
-                tablinks = document.getElementsByClassName("tablinks");
-                for (i = 0; i < tablinks.length; i++) {
-                    tablinks[i].className = tablinks[i].className.replace(" active", "");
-                }
-                document.getElementById(systemName).style.display = "block";
-                evt.currentTarget.className += " active";
-            }
-            document.getElementById("defaultOpen").click();
-        </script>
 @endsection
